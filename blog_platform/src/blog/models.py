@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
 from django.utils.text import slugify
+from .managers import PostManager, CommentManager
 
 
 class Category(models.Model):
@@ -46,26 +47,6 @@ class Tag(models.Model):
         return reverse('blog:tag_detail', args=[self.slug])
 
 
-class PostManager(models.Manager):
-    """Custom manager for Post model"""
-    
-    def published(self):
-        """Return only published posts"""
-        return self.filter(status='published')
-    
-    def by_category(self, category_slug):
-        """Return posts for a specific category"""
-        return self.published().filter(category__slug=category_slug)
-    
-    def by_tag(self, tag_slug):
-        """Return posts with a specific tag"""
-        return self.published().filter(tags__slug=tag_slug).distinct()
-    
-    def recent_posts(self, count=5):
-        """Return most recent posts"""
-        return self.published().order_by('-published_date')[:count]
-
-
 class Post(models.Model):
     """Blog post model"""
     STATUS_CHOICES = (
@@ -76,23 +57,24 @@ class Post(models.Model):
     title = models.CharField(max_length=200)
     slug = models.SlugField(unique=True, max_length=200)
     content = models.TextField()
-    published_date = models.DateTimeField(auto_now_add=True)
-    updated_date = models.DateTimeField(auto_now=True)
+    featured_image = models.ImageField(upload_to='posts/', blank=True)
+    
+    # Time fields
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    published_at = models.DateTimeField(null=True, blank=True)
+    
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='draft')
     
     # Relationships
-    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='blog_posts')
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts')
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='posts')
     tags = models.ManyToManyField(Tag, related_name='posts', blank=True)
     
-    # Custom manager
-    objects = models.Manager()  # Default manager
-    published_objects = PostManager()  # Custom manager
-    
     class Meta:
-        ordering = ['-published_date']
+        ordering = ['-created_at']
         indexes = [
-            models.Index(fields=['-published_date']),
+            models.Index(fields=['-created_at']),
         ]
     
     def __str__(self):
@@ -105,27 +87,30 @@ class Post(models.Model):
     
     def get_absolute_url(self):
         return reverse('blog:post_detail', args=[self.slug])
+
     
-    @property
-    def comment_count(self):
-        """Return the number of comments for this post"""
-        return self.comments.filter(approved=True).count()
+    # Managers
+    objects = models.Manager()  # Default manager
+    blog_objects = PostManager()  # Custom manager
 
 
 class Comment(models.Model):
     """Comment model for blog posts"""
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
-    name = models.CharField(max_length=100)
-    email = models.EmailField()
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments')
     content = models.TextField()
-    created_date = models.DateTimeField(auto_now_add=True)
-    approved = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_approved = models.BooleanField(default=False)
     
     class Meta:
-        ordering = ['created_date']
+        ordering = ['created_at']
         indexes = [
-            models.Index(fields=['created_date']),
+            models.Index(fields=['created_at']),
         ]
     
     def __str__(self):
-        return f"Comment by {self.name} on {self.post}"
+        return f"Comment by {self.author.username} on {self.post.title}"
+
+    objects = models.Manager()  # Default manager
+    blog_objects = CommentManager()  # Custom manager
+
