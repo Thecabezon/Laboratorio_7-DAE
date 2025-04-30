@@ -1,0 +1,177 @@
+/* Estilos base */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0 20px;
+    background-color: #f5f5f5;
+    color: #333;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+header, footer {
+    background-color: #222;
+    color: white;
+    padding: 10px 20px;
+    transition: background-color 0.3s ease;
+}
+
+a {
+    color: #007bff;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Estilos para artículos */
+article {
+    background-color: white;
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+article:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* Estilos para el botón de scroll */
+.scroll-top {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #007bff;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    transition: all 0.3s ease;
+    opacity: 0;
+    visibility: hidden;
+    z-index: 1000;
+}
+
+.scroll-top.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.scroll-top:hover {
+    background: #0056b3;
+    transform: translateY(-3px);
+}
+
+/* Estilos para el tiempo de lectura */
+.reading-time {
+    display: block;
+    margin-bottom: 1em;
+    color: #666;
+    font-size: 0.9em;
+    font-style: italic;
+}
+
+/* Estilos para el botón de modo oscuro */
+.dark-mode-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: transparent;
+    border: 2px solid #007bff;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+    cursor: pointer;
+    z-index: 1000;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dark-mode-toggle:hover {
+    transform: rotate(360deg);
+}
+
+/* Estilos para el modo oscuro */
+.dark-mode {
+    background-color: #1a1a1a;
+    color: #ffffff;
+}
+
+.dark-mode header,
+.dark-mode footer {
+    background-color: #000;
+}
+
+.dark-mode article {
+    background-color: #2d2d2d;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.dark-mode a {
+    color: #66b0ff;
+}
+
+.dark-mode .reading-time {
+    color: #999;
+}
+
+.dark-mode pre code {
+    background-color: #363636;
+    color: #ffffff;
+}
+
+/* Estilos para bloques de código */
+pre code {
+    background-color: #f4f4f4;
+    padding: 1em;
+    border-radius: 5px;
+    display: block;
+    overflow: auto;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+/* Estilos para la navegación */
+nav {
+    margin: 10px 0;
+}
+
+nav a {
+    margin-right: 15px;
+    color: white;
+}
+
+nav a:hover {
+    color: #007bff;
+}
+
+/* Estilos para la lista de posts */
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+ul li {
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: white;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.dark-mode ul li {
+    background-color: #2d2d2d;
+}
+
+ul li:hover {
+    transform: translateX(10px);
+}
